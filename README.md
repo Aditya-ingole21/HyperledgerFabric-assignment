@@ -61,20 +61,20 @@ curl -X POST http://localhost:3000/login -H "Content-Type: application/json" -d 
 
 
 Network Startup & User Registration/Enrollment
+<img width="1331" height="220" alt="Screenshot 2025-12-16 175033" src="https://github.com/user-attachments/assets/98f3a86b-88e9-434a-a848-1e3ac0b9a431" />
+<img width="1303" height="404" alt="Screenshot 2025-12-16 175308" src="https://github.com/user-attachments/assets/388bca5d-2fcc-4c9a-a9b8-8d49507fd252" />
 
-Network startup showing automatic registration and enrollment of user1
+
 
 Running Containers (including Fabric CAs)
-docker ps output showing all containers
+<img width="1298" height="578" alt="Screenshot 2025-12-16 184826" src="https://github.com/user-attachments/assets/b37073e9-850a-4c3f-9378-282d29f082da" />
 
 Main Authentication Success
-node app.js successful output
-
+<img width="1398" height="113" alt="Screenshot 2025-12-17 231743" src="https://github.com/user-attachments/assets/7dc64f4f-83c7-422d-9bbe-9f785d80573b" />
 
 Bonus API – Register, Enroll, Login
-Bonus API register success
-Bonus API enroll success
-Bonus API login success
+<img width="1490" height="268" alt="Screenshot 2025-12-17 232021" src="https://github.com/user-attachments/assets/88f93556-d875-4cae-8c3e-e953a35aafcc" />
+
 ## Tech Stack
 
 -Hyperledger Fabric v2.5.14
