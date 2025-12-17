@@ -59,7 +59,8 @@ Network Startup & User Registration/Enrollment
 Network startup showing automatic registration and enrollment of user1
 
 Running Containers (including Fabric CAs)
-docker ps output showing all containers
+<img width="1298" height="578" alt="Screenshot 2025-12-16 184826" src="https://github.com/user-attachments/assets/5c5bb3ae-2377-44df-9d05-fcd5e8ac6cff" />
+
 
 Main Authentication Success
 node app.js successful output
