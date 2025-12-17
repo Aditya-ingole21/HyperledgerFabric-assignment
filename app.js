@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const { connect, signers } = require('@hyperledger/fabric-gateway');
 const crypto = require('crypto');
+const { common } = require('@hyperledger/fabric-protos');
 
 async function main() {
     const mspPath = '/home/aditya/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp';
@@ -33,8 +34,13 @@ async function main() {
         const qscc = network.getContract('qscc');
         const resultBytes = await qscc.evaluateTransaction('GetChainInfo', 'mychannel');
         
+
+        const chainInfo = common.BlockchainInfo.decode(resultBytes);
+        console.log('Block height:', chainInfo.height.toString());
+
+        
     
-        const height = parseInt(resultBytes.toString('hex').slice(-16), 16); 
+        
 
         console.log('✅ Authentication Successful as User1!');
         console.log('📊 Channel "mychannel" block height:', resultBytes.length > 0 ? 'exists and accessible' : 'empty');
