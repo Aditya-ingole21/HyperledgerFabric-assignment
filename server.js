@@ -12,31 +12,53 @@ const testNetworkPath = '/home/aditya/fabric-samples/test-network';
 const org1Path = `${testNetworkPath}/organizations/peerOrganizations/org1.example.com`;
 const caCertPath = `${testNetworkPath}/organizations/fabric-ca/org1/ca-cert.pem`;
 
-
 function runCaCommand(cmd) {
-    return execSync(cmd, { cwd: org1Path, encoding: 'utf8' });
+    const fabricCaClient = `${process.env.HOME}/fabric-samples/bin/fabric-ca-client`;
+    const fullCmd = `${fabricCaClient} ${cmd}`;
+    
+    // Add required environment for fabric-ca-client
+    const env = {
+        ...process.env,
+        FABRIC_CA_CLIENT_HOME: org1Path
+    };
+    
+    try {
+        const output = execSync(fullCmd, { 
+            cwd: org1Path, 
+            encoding: 'utf8',
+            env: env,
+            stdio: ['ignore', 'pipe', 'pipe']  // Capture stdout and stderr
+        });
+        console.log('CA Command Output:', output);  // For debugging
+        return output;
+    } catch (error) {
+        const errMsg = error.stderr ? error.stderr.toString() : error.message;
+        console.error('CA Command Error:', errMsg);
+        throw new Error(errMsg || 'Fabric CA command failed');
+    }
 }
+
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
 
+const cmd = `register --home "${org1Path}" --caname ca-org1 --id.name ${username} --id.secret ${password} --id.type client --tls.certfiles "${caCertPath}"`;
     try {
-        runCaCommand(`fabric-ca-client register --caname ca-org1 --id.name ${username} --id.secret ${password} --id.type client --tls.certfiles "${caCertPath}"`);
+        runCaCommand(cmd);
         res.json({ message: `User ${username} registered successfully` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-
 app.post('/enroll', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
 
     const userMspPath = `${org1Path}/users/${username}@org1.example.com/msp`;
-
+const cmd = `enroll --home "${org1Path}" -u https://${username}:${password}@localhost:7054 --caname ca-org1 -M "${userMspPath}" --tls.certfiles "${caCertPath}"`;
     try {
-        runCaCommand(`fabric-ca-client enroll -u https://${username}:${password}@localhost:7054 --caname ca-org1 -M "${userMspPath}" --tls.certfiles "${caCertPath}"`);
+        runCaCommand(cmd);
         res.json({ message: `User ${username} enrolled successfully. Credentials saved to MSP folder.` });
     } catch (error) {
         res.status(500).json({ error: error.message });
