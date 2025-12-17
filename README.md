@@ -1,42 +1,78 @@
 # Hyperledger Fabric – User Registration & Authentication
 
-This is my submission for the intern assignment. The goal was to set up a Fabric network with Fabric CA, register and enroll a user, store the credentials, and then prove authentication works by connecting to the network and querying the ledger.
+A simple implementation of user registration and authentication in Hyperledger Fabric using Fabric CA. The project shows how identities are created, enrolled, stored, and used to authenticate against the network.
 
-## Setup & Environment
+## Installation
 
-I used Hyperledger Fabric v2.5.14 on WSL2 (Ubuntu) with Docker Desktop.
+```
+1.Install Hyperledger Fabric binaries, samples, and Docker images (only once):
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh | bash -s -- docker binary samples
 
-1. Installed Fabric binaries, samples, and Docker images using the official install script.
-2. Started the test network with CA support:
-```bash
- cd ~/fabric-samples/test-network
- ./network.sh down
+2.Navigate to the test network:
+cd ~/fabric-samples/test-network
+
+Start the network with Fabric CA enabled:
+./network.sh down
 ./network.sh up createChannel -ca -c mychannel
 
-This command starts the peers, orderer, and three Fabric CA servers. It also automatically registers and enrolls a default user called user1 (password: user1pw) for both organizations.
-See screenshot screenshots/01-network-startup-and-registration-enrollment.png for the full terminal output showing registration and enrollment.
-See screenshot screenshots/02-docker-ps.png for proof that all containers (including the three CA containers) are running.
+## Usage/Examples
 
-User Credentials
-The credentials for user1 (Org1) are stored in the file-system MSP at:
+Main Authentication Test
+Run the Node.js app to verify authentication using user1's credentials:
 
-~/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/
-Public certificate: signcerts/cert.pem
-Private key: keystore/<random-named-key-file>
-
-This satisfies the requirement of storing credentials in a wallet (file system used here).
-Authentication Application
-I wrote a simple Node.js application (app.js) that:
-
-Loads user1's certificate and private key from the MSP folder
-Connects to the Fabric gateway using that identity
-Queries the system chaincode qscc on channel mychannel (GetChainInfo)
-
-A successful query proves that authentication works.
-Run with:
+cd path/to/your/project-folder
+npm install
 node app.js
 
-Output (see screenshot screenshots/03-authentication-success.png):
+Expected output:
 ✅ Authentication Successful as User1!
 📊 Channel "mychannel" block height: exists and accessible
 Raw response length: 70
+
+Bonus: Login API
+Start the Express API for dynamic user registration, enrollment, and login:
+node server.js
+
+Then use curl (or Postman) to test:
+# Register a new user
+curl -X POST http://localhost:3000/register -H "Content-Type: application/json" -d '{"username":"myuser","password":"mypassword"}'
+
+# Enroll the user
+curl -X POST http://localhost:3000/enroll -H "Content-Type: application/json" -d '{"username":"myuser","password":"mypassword"}'
+
+# Login (authenticates using the certificate)
+curl -X POST http://localhost:3000/login -H "Content-Type: application/json" -d '{"username":"myuser"}'
+
+# Features
+
+-Automatic registration & enrollment via Fabric CA (using test-network script)
+-File-system wallet (MSP) for storing certificates and private keys
+-Node.js client using Fabric Gateway SDK for authentication
+-Query system chaincode (qscc) to prove successful authentication
+-Bonus Express API for full user lifecycle (register → enroll → login)
+
+
+## Screenshots
+
+Network Startup & User Registration/Enrollment
+Network startup showing automatic registration and enrollment of user1
+
+Running Containers (including Fabric CAs)
+docker ps output showing all containers
+
+Main Authentication Success
+node app.js successful output
+
+Bonus API – Register, Enroll, Login
+Bonus API register success
+Bonus API enroll success
+Bonus API login success
+
+## Tech Stack
+
+-Hyperledger Fabric v2.5.14
+-Fabric CA v1.5.15
+-Node.js
+-@hyperledger/fabric-gateway
+-Express (for bonus API)
