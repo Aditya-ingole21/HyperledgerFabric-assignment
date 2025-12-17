@@ -47,7 +47,7 @@ async function main() {
         console.log('Raw response length:', resultBytes.length);
 
     } catch (error) {
-        console.error('❌ Authentication failed:', error.message);
+        console.error('❌Authentication failed:', error.message);
     } finally {
         gateway.close();
         client.close();

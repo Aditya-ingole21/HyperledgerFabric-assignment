@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Aditya-ingole21/HyperledgerFabric-assignment#readme",
   "dependencies": {
-    "@hyperledger/fabric-gateway": "^1.10.0"
+    "@hyperledger/fabric-gateway": "^1.10.0",
+    "express": "^5.2.1"
   }
 }
